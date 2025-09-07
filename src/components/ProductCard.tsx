@@ -55,7 +55,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
     <div
       key={product.product_id}
-      className="max-h-[740px] p-2 min-w-[250px] hover:scale-105 transition-transform focus:ring-2 w-full"
+      className="max-h-[740px] min-w-[250px] hover:scale-105 transition-transform focus:ring-2 w-full"
     >
       <a
         href={`/product/${product.product_id}`}

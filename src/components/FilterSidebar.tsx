@@ -2,7 +2,9 @@ import React from "react";
 import collections from "./../data/collections.json";
 import inventory from "./../data/inventory.json";
 import categories from "./../data/categories.json";
-import ColorSwatch from "./ui/ColorSwatch";
+import FilterGroup from "./FilterGroup";
+import ColorFilterGroup from "./ColorFilterGroup";
+import SIZE_OPTIONS from "../constants/Constants";
 
 interface Filters {
   collections: string[];
@@ -14,11 +16,15 @@ interface Filters {
 interface FilterSidebarProps {
   filters: Filters;
   onFilterChange: (filters: Filters) => void;
+  isModalOpen: boolean;
+  onClose: () => void;
 }
 
 const FilterSidebar: React.FC<FilterSidebarProps> = ({
   filters,
   onFilterChange,
+  isModalOpen,
+  onClose,
 }) => {
   const handleCheckboxChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -29,105 +35,117 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
       filterType === "sizes" && !isNaN(Number(value)) ? Number(value) : value;
     const currentValues = filters[filterType] as (string | number)[];
 
+    console.log(SIZE_OPTIONS);
+
     const updatedValues = checked
       ? [...currentValues, parsedValue]
       : currentValues.filter((item) => item !== parsedValue);
-
-    console.log(updatedValues);
 
     const newFilters = {
       ...filters,
       [filterType]: updatedValues,
     };
-
-    console.log(newFilters);
     onFilterChange(newFilters as Filters);
   };
 
+  const sidebarClasses = `
+    w-full
+    xl:relative xl:block xl:min-w-[300px] xl:w-1/4
+    ${
+      isModalOpen
+        ? "fixed inset-0 z-50 transform translate-x-0 transition-transform duration-300"
+        : "fixed inset-0 z-50 transform -translate-x-full transition-transform duration-300 xl:translate-x-0"
+    }
+  `;
+
+  const sizeOptions = Array.from(
+    new Set(
+      inventory
+        .flatMap((item) => item.size)
+        .filter((size) => size !== null && size !== undefined)
+    )
+  ).map((size) => ({
+    id: size,
+    name:
+      SIZE_OPTIONS[SIZE_OPTIONS.findIndex((s) => s.id === size)]?.name || size,
+  }));
+
+  const colorOptions = Array.from(
+    new Set(
+      inventory
+        .flatMap((item) => item.color)
+        .filter((color) => color !== null && color !== undefined)
+    )
+  ).map((color) => color);
+
   return (
-    <div className="max-w-xs">
-      <h3>Filters</h3>
-      <div className="flex flex-col mb-4">
-        <label>Collection:</label>
-        {collections.map((collection) => (
-          <label key={collection.collection_id}>
-            <input
-              type="checkbox"
-              name="collection"
-              value={collection.collection_id}
-              checked={filters.collections.includes(collection.collection_id)}
-              onChange={(e) => handleCheckboxChange(e, "collections")}
-            />{" "}
-            {collection.name}
-          </label>
-        ))}
-      </div>
-      <div className="flex flex-col mb-4">
-        <label>Sizes:</label>
-        {Array.from(
-          new Set(
-            inventory
-              .flatMap((item) => item.size)
-              .filter((size) => size !== null && size !== undefined)
-          )
-        ).map((size) => (
-          <label key={size}>
-            <input
-              type="checkbox"
-              name="size"
-              value={String(size)}
-              checked={filters.sizes.includes(size)}
-              onChange={(e) => handleCheckboxChange(e, "sizes")}
-            />{" "}
-            {size}
-          </label>
-        ))}
-      </div>
-      <div className="flex flex-col mb-4">
-        <label>Colors:</label>
-        <div className="flex flex-wrap gap-1">
-          {Array.from(
-            new Set(
-              inventory
-                .flatMap((item) => item.color)
-                .filter((color) => color !== null && color !== undefined)
-            )
-          ).map((color) => (
-            <label htmlFor={`color-${color}`} key={color}>
-              <input
-                id={`color-${color}`}
-                type="checkbox"
-                name="color"
-                value={color}
-                checked={filters.colors.includes(color)}
-                onChange={(e) => handleCheckboxChange(e, "colors")}
-                className="hidden peer"
-              />
-              <ColorSwatch
-                color={color}
-                className={`p-1 peer-checked:ring-gray-500 peer-checked:ring-2 focus:ring-2 focus:ring-blue-500`}
-              ></ColorSwatch>
-              <span className="ml-2 capitalize sr-only">{color}</span>
-            </label>
-          ))}
+    <>
+      <div className={sidebarClasses}>
+        <div
+          className={`fixed inset-0 bg-gray-900/50 transition-opacity duration-300
+          ${
+            isModalOpen
+              ? "opacity-100 xl:hidden"
+              : "opacity-0 pointer-events-none"
+          }
+          `}
+          onClick={onClose}
+        ></div>
+
+        <div
+          className={`relative xl:h-auto h-full max-w-[350px] overflow-y-scroll bg-white p-4`}
+        >
+          {isModalOpen && (
+            <div className="flex items-center justify-between pb-4 border-b border-b-neutral-200">
+              <h3 className="text-xl font-bold">Filters</h3>
+              <button
+                onClick={onClose}
+                className="p-2 rounded-full focus:outline-none"
+              >
+                &times;
+              </button>
+            </div>
+          )}
+          <div className="py-4 h-full overflow-y-auto">
+            <FilterGroup
+              title="Collection:"
+              filterType="collections"
+              options={collections.map((c) => ({
+                id: c.collection_id,
+                name: c.name,
+              }))}
+              selectedFilters={filters.collections}
+              onFilterChange={handleCheckboxChange}
+            />
+
+            <FilterGroup
+              title="Sizes:"
+              filterType="sizes"
+              options={sizeOptions}
+              selectedFilters={filters.sizes}
+              onFilterChange={handleCheckboxChange}
+            />
+
+            <ColorFilterGroup
+              colors={colorOptions}
+              selectedColors={filters.colors}
+              onFilterChange={handleCheckboxChange}
+            />
+
+            <FilterGroup
+              title="Categories:"
+              filterType="categories"
+              options={categories.map((c) => ({
+                id: c.category_id,
+                name: c.name,
+              }))}
+              selectedFilters={filters.categories}
+              onFilterChange={handleCheckboxChange}
+            />
+          </div>
         </div>
       </div>
-      <div className="flex flex-col mb-4">
-        <label>Categories:</label>
-        {categories.map((category) => (
-          <label key={category.category_id}>
-            <input
-              type="checkbox"
-              name="category"
-              value={category.category_id}
-              checked={filters.categories.includes(category.category_id)}
-              onChange={(e) => handleCheckboxChange(e, "categories")}
-            />{" "}
-            {category.name}
-          </label>
-        ))}
-      </div>
-    </div>
+    </>
   );
 };
 

@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import products from "../data/products.json";
 import inventory from "../data/inventory.json";
 import ProductCard from "./ProductCard";
 import FilterSidebar from "./FilterSidebar";
+import { CiFilter } from "react-icons/ci";
+import { IoChevronDownOutline } from "react-icons/io5";
 
 interface Filters {
   collections: string[];
@@ -18,6 +20,16 @@ const ProductGrid: React.FC = () => {
     categories: [],
     colors: [],
   });
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+  }, [isModalOpen]);
 
   const handleFilterChange = (updatedFilters: Filters) => {
     setFilters(updatedFilters);
@@ -69,20 +81,39 @@ const ProductGrid: React.FC = () => {
   });
 
   return (
-    <div className="flex p-4">
-      <div className="hidden xl:block min-w-[250px]">
-        <FilterSidebar filters={filters} onFilterChange={handleFilterChange} />
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 max-w-6xl mx-auto">
-        {filteredProducts.length > 0 ? (
-          filteredProducts.map((product) => (
-            <ProductCard key={product.product_id} product={product} />
-          ))
-        ) : (
-          <p className="col-span-full text-center text-gray-500">
-            No products match the selected filters.
-          </p>
-        )}
+    <div className="p-4">
+      <div className="xl:flex xl:justify-center xl:gap-4">
+        <FilterSidebar
+          filters={filters}
+          onFilterChange={handleFilterChange}
+          isModalOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        />
+        <div className="flex flex-col">
+          <div className="flex justify-between xl:justify-end text-sm my-6">
+            <button
+              className="border border-neutral-200 px-2 flex items-center gap-2 rounded-md xl:hidden"
+              onClick={() => setIsModalOpen(true)}
+            >
+              <CiFilter /> Filter
+            </button>
+
+            <button className="border shadow border-neutral-200 p-4 flex items-center gap-2 rounded-md">
+              Sort by <IoChevronDownOutline />
+            </button>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+            {filteredProducts.length > 0 ? (
+              filteredProducts.map((product) => (
+                <ProductCard key={product.product_id} product={product} />
+              ))
+            ) : (
+              <p className="col-span-full text-center text-gray-500">
+                No products match the selected filters.
+              </p>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
