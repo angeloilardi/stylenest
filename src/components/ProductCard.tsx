@@ -29,9 +29,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const currentInventoryItem = useMemo(() => {
     return inventory.find(
       (item) =>
-        item.product_id === product.product_id && item.color === currentColor
+        item.product_id === product.product_id &&
+        item.color === (currentColor ?? colors[0])
     );
-  }, [product.product_id, currentColor]);
+  }, [product.product_id, currentColor, colors]);
 
   const listPrice = currentInventoryItem?.list_price || 0;
   const salePrice = currentInventoryItem?.sale_price || 0;
@@ -53,7 +54,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
     <div
       key={product.product_id}
-      className="max-h-[740px] min-w-[250px] hover:scale-105 transition-transform focus:ring-2 w-full"
+      className="max-h-[740px] min-w-[250px] focus:ring-2 w-full"
     >
       <a
         href={`/product/${product.product_id}`}
