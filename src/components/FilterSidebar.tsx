@@ -150,6 +150,28 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
               selectedRatings={filters.ratings}
               onFilterChange={handleCheckboxChange}
             />
+            <div className="flex justify-center font-semibold">
+              <button
+                onClick={() =>
+                  onFilterChange({
+                    collections: [],
+                    sizes: [],
+                    categories: [],
+                    colors: [],
+                    ratings: [],
+                  })
+                }
+                className="px-4 py-2 rounded-md text-indigo-700"
+              >
+                {`Clear all(${
+                  filters.collections.length +
+                  filters.sizes.length +
+                  filters.categories.length +
+                  filters.colors.length +
+                  filters.ratings.length
+                })`}
+              </button>
+            </div>
           </div>
         </div>
       </div>
