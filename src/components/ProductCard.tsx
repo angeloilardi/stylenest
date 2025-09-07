@@ -24,8 +24,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   }, [product.product_id]);
   const [currentColor, setCurrentColor] = useState<string | null>(null);
 
-  console.log(currentColor);
-
   const hasMultipleColors = colors.length > 1;
 
   const currentInventoryItem = useMemo(() => {

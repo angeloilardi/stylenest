@@ -5,12 +5,14 @@ import categories from "./../data/categories.json";
 import FilterGroup from "./FilterGroup";
 import ColorFilterGroup from "./ColorFilterGroup";
 import SIZE_OPTIONS from "../constants/Constants";
+import RatingFilterGroup from "./RatingFilterGroup";
 
 interface Filters {
   collections: string[];
   sizes: (string | number)[];
   categories: string[];
   colors: string[];
+  ratings: number[];
 }
 
 interface FilterSidebarProps {
@@ -32,10 +34,11 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
   ) => {
     const { value, checked } = e.target;
     const parsedValue =
-      filterType === "sizes" && !isNaN(Number(value)) ? Number(value) : value;
+      (filterType === "sizes" || filterType === "ratings") &&
+      !isNaN(Number(value))
+        ? Number(value)
+        : value;
     const currentValues = filters[filterType] as (string | number)[];
-
-    console.log(SIZE_OPTIONS);
 
     const updatedValues = checked
       ? [...currentValues, parsedValue]
@@ -140,6 +143,11 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                 name: c.name,
               }))}
               selectedFilters={filters.categories}
+              onFilterChange={handleCheckboxChange}
+            />
+            <RatingFilterGroup
+              ratingsRange={5}
+              selectedRatings={filters.ratings}
               onFilterChange={handleCheckboxChange}
             />
           </div>

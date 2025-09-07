@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import products from "../data/products.json";
 import inventory from "../data/inventory.json";
+import productReviews from "../data/product-reviews.json";
 import ProductCard from "./ProductCard";
 import FilterSidebar from "./FilterSidebar";
 import { CiFilter } from "react-icons/ci";
@@ -11,6 +12,15 @@ interface Filters {
   sizes: (string | number)[];
   categories: string[];
   colors: string[];
+  ratings: number[];
+}
+
+interface ProductReview {
+  product_id: string;
+  user_id: string;
+  rating: number;
+  content: string | null;
+  created_at: string;
 }
 
 const ProductGrid: React.FC = () => {
@@ -19,6 +29,7 @@ const ProductGrid: React.FC = () => {
     sizes: [],
     categories: [],
     colors: [],
+    ratings: [],
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -50,6 +61,20 @@ const ProductGrid: React.FC = () => {
       return false;
     }
 
+    const productReview = (productReviews as ProductReview[]).find(
+      (review) => review.product_id === product.product_id
+    );
+    const productRating = productReview?.rating;
+
+    const ratingMatch =
+      filters.ratings.length === 0 ||
+      (productRating !== undefined &&
+        filters.ratings.includes(Math.floor(productRating)));
+
+    if (!collectionMatch || !categoryMatch || !ratingMatch) {
+      return false;
+    }
+
     // Check for a match against the size and color filters by looking at the inventory
     const inventoryMatches = inventory.filter(
       (item) => item.product_id === product.product_id
@@ -76,7 +101,7 @@ const ProductGrid: React.FC = () => {
       const sizeMatch = isFiltered(filters.sizes, item.size);
       const colorMatch = isFiltered(filters.colors, item.color);
 
-      return sizeMatch && colorMatch;
+      return sizeMatch && colorMatch && ratingMatch;
     });
   });
 
