@@ -8,6 +8,8 @@ import { useState, useMemo } from "react";
 import DiscountBadge from "./ui/DiscountBadge";
 import RatingStars from "./ui/RatingStars";
 import ColorSwatch from "./ui/ColorSwatch";
+import SIZE_OPTIONS from "../constants/Constants";
+import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
 
 export function ProductDetails() {
   const { productId } = useParams();
@@ -25,6 +27,8 @@ export function ProductDetails() {
   const [currentSize, setCurrentSize] = useState<string | number | null>(null);
 
   const [currentPictureIndex, setCurrentPictureIndex] = useState(0);
+
+  const [quantity, setQuantity] = useState(1);
 
   const allImages = productImages.filter((img) => img.product_id === productId);
 
@@ -60,8 +64,19 @@ export function ProductDetails() {
   const sizeOptions = useMemo(() => {
     return inventory
       .filter((item) => item.product_id === productId)
-      .map((item) => item.size);
-  }, [productId]);
+      .map((item) => (item.color === currentColor ? item.size : null))
+      .filter((item) => item !== null);
+  }, [productId, currentColor]);
+
+  const isItemAvailableForPurchase = useMemo(() => {
+    const currentItem = inventory.find(
+      (item) =>
+        item.product_id === productId &&
+        item.color === currentColor &&
+        item.size === currentSize
+    );
+    return currentItem && currentItem.stock > currentItem.sold;
+  }, [productId, currentColor, currentSize]);
 
   return (
     <div className="flex flex-col p-4 max-w-full">
@@ -115,34 +130,106 @@ export function ProductDetails() {
       </p>
       <div className="flex flex-col">
         <p>Available colors:</p>
-        <ul className="flex gap-2 pt-10 pb-16">
-          {colorOptions.map((color) => (
-            <ColorSwatch
-              key={color}
-              color={color}
-              currentColor={currentColor}
-              setCurrentColor={setCurrentColor}
-              className="w-15 h-15"
-            />
-          ))}
+        <ul className="flex gap-2 mt-10">
+          {colorOptions.map((color) => {
+            const isColorAvailable = inventory.some(
+              (item) =>
+                item.product_id === productId &&
+                item.color === color &&
+                item.stock > item.sold
+            );
+            return (
+              <ColorSwatch
+                key={color}
+                color={color}
+                currentColor={currentColor}
+                setCurrentColor={(newColor) => {
+                  if (isColorAvailable) {
+                    setCurrentColor(newColor);
+                    setCurrentSize(null);
+                  }
+                }}
+                className={`w-15 h-15 ${
+                  !isColorAvailable ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+              />
+            );
+          })}
         </ul>
       </div>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 mt-10">
         Available sizes:
-        <ul className="flex gap-2 pt-10 pb-16 flex-wrap">
-          {sizeOptions.map((size) => (
+        <ul className="flex gap-2 flex-wrap">
+          {sizeOptions && sizeOptions.length > 0 ? (
+            sizeOptions.map((size) => {
+              const currentItem = inventory.find(
+                (item) =>
+                  item.product_id === productId &&
+                  item.color === currentColor &&
+                  item.size === size
+              );
+              const isSizeAvailable =
+                currentItem && currentItem.stock > currentItem.sold;
+
+              return (
+                <li
+                  key={size}
+                  className={`border border-neutral-200 p-2 rounded w-24 h-16 flex items-center justify-center
+                  ${size === currentSize ? "border-neutral-900" : ""} ${
+                    isSizeAvailable
+                      ? "cursor-pointer hover:border-black"
+                      : "opacity-50 cursor-not-allowed"
+                  }`}
+                  onClick={() => {
+                    if (isSizeAvailable) {
+                      setCurrentSize(size);
+                    }
+                  }}
+                >
+                  {SIZE_OPTIONS.find((s) => s.id === size)?.shortName || ""}
+                </li>
+              );
+            })
+          ) : (
             <li
-              key={size}
-              className={`border border-neutral-200 p-2 rounded w-24 h-16 flex items-center justify-center cursor-pointer hover:border-black ${
-                size === currentSize ? "border-black" : ""
-              }`}
-              onClick={() => setCurrentSize(size)}
+              className={`border border-neutral-200 p-2 rounded w-24 h-16 flex items-center justify-center`}
             >
-              {size}
+              One Size
             </li>
-          ))}
+          )}
         </ul>
       </div>
+      <div className="flex flex-col mt-10 gap-7 mb-12">
+        <p>Quantity</p>
+        <div className="flex w-[186px]h-14 rounded-lg bg-neutral-100 justify-between items-center">
+          <AiOutlineMinus
+            role="button"
+            className="w-6 h-6 m-4 text-gray-500 cursor-pointer"
+            onClick={() =>
+              isItemAvailableForPurchase &&
+              setQuantity(Math.max(1, quantity - 1))
+            }
+          />
+          <span className="text-lg">{quantity}</span>
+          <AiOutlinePlus
+            role="button"
+            className="w-6 h-6 m-4 text-gray-500 cursor-pointer"
+            onClick={() =>
+              isItemAvailableForPurchase && setQuantity(quantity + 1)
+            }
+          />
+        </div>
+      </div>
+      <button
+        className={`w-full text-white py-2 rounded-lg mb-14 ${
+          isItemAvailableForPurchase
+            ? "bg-blue-500"
+            : "bg-gray-400 cursor-not-allowed"
+        }`}
+        disabled={!isItemAvailableForPurchase}
+      >
+        Add to Cart
+      </button>
     </div>
   );
 }

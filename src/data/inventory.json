@@ -392,7 +392,7 @@
     "discount": null,
     "discount_percentage": 10,
     "sale_price": 22.5,
-    "sold": 90,
+    "sold": 910,
     "stock": 910
   },
   {
@@ -1688,7 +1688,7 @@
     "discount": null,
     "discount_percentage": null,
     "sale_price": 15,
-    "sold": 65,
+    "sold": 435,
     "stock": 435
   },
   {
