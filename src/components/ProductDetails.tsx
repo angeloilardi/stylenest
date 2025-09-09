@@ -13,22 +13,40 @@ import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
 
 export function ProductDetails() {
   const { productId } = useParams();
-  const colorOptions = [
-    ...new Set(
-      productImages
-        .filter((item) => item.product_id === productId)
-        .map((item) => item.color)
-    ),
-  ];
-  const [currentColor, setCurrentColor] = useState<string | null>(
-    colorOptions[0] || null
-  );
+  const colorOptions = useMemo(() => {
+    return [
+      ...new Set(
+        productImages
+          .filter((item) => item.product_id === productId)
+          .map((item) => item.color)
+      ),
+    ];
+  }, [productId]);
+
+  const defaultColor = useMemo(() => {
+    // Find the first available color by checking inventory stock.
+    const firstAvailableColor = colorOptions.find((color) => {
+      return inventory.some(
+        (item) =>
+          item.product_id === productId &&
+          item.color === color &&
+          item.stock > item.sold
+      );
+    });
+    return firstAvailableColor || colorOptions[0] || null;
+  }, [colorOptions, productId]);
+
+  const [currentColor, setCurrentColor] = useState<string | null>(defaultColor);
 
   const [currentSize, setCurrentSize] = useState<string | number | null>(null);
 
   const [currentPictureIndex, setCurrentPictureIndex] = useState(0);
 
   const [quantity, setQuantity] = useState(1);
+
+  const productDetails = useMemo(() => {
+    return productInfo.filter((item) => item.product_id === productId);
+  }, [productId]);
 
   const allImages = productImages.filter((img) => img.product_id === productId);
 
@@ -80,6 +98,7 @@ export function ProductDetails() {
 
   return (
     <div className="flex flex-col p-4 max-w-full">
+      {/* Image gallery */}
       <div className="flex flex-col gap-11 py-18">
         <div className="w-full">
           <img
@@ -102,9 +121,13 @@ export function ProductDetails() {
           ))}
         </div>
       </div>
+
+      {/* Product name */}
       <h1 className="text-2xl font-semibold">
         {products.find((item) => item.product_id === productId)?.name}
       </h1>
+
+      {/* Price */}
       <div className="flex py-3 gap-2 items-center text-gray-500">
         {isDiscounted ? (
           <div className="flex flex-col gap-2">
@@ -118,6 +141,8 @@ export function ProductDetails() {
           <span className="text-3xl">${listPrice}</span>
         )}
       </div>
+
+      {/* Rating */}
       <div className="flex items-center gap-4">
         <span className="text-3xl">{productRating.toFixed(1)}</span>
         <RatingStars rating={productRating} ratingRange={5} />
@@ -125,9 +150,13 @@ export function ProductDetails() {
           See all {totalReviews} reviews
         </a>
       </div>
+
+      {/* Product description */}
       <p className="py-12">
         {products.find((item) => item.product_id === productId)?.description}
       </p>
+
+      {/* Available colors */}
       <div className="flex flex-col">
         <p>Available colors:</p>
         <ul className="flex gap-2 mt-10">
@@ -150,13 +179,15 @@ export function ProductDetails() {
                   }
                 }}
                 className={`w-15 h-15 ${
-                  !isColorAvailable ? "opacity-50 cursor-not-allowed" : ""
+                  !isColorAvailable ? "opacity-70 cursor-not-allowed" : ""
                 }`}
               />
             );
           })}
         </ul>
       </div>
+
+      {/* Available sizes */}
       <div className="flex flex-col gap-4 mt-10">
         Available sizes:
         <ul className="flex gap-2 flex-wrap">
@@ -186,7 +217,9 @@ export function ProductDetails() {
                     }
                   }}
                 >
-                  {SIZE_OPTIONS.find((s) => s.id === size)?.shortName || ""}
+                  {!Number.isNaN(size)
+                    ? size.toString()
+                    : SIZE_OPTIONS.find((s) => s.id === size)?.shortName || ""}
                 </li>
               );
             })
@@ -199,9 +232,11 @@ export function ProductDetails() {
           )}
         </ul>
       </div>
+
+      {/* Quantity selector */}
       <div className="flex flex-col mt-10 gap-7 mb-12">
         <p>Quantity</p>
-        <div className="flex w-[186px]h-14 rounded-lg bg-neutral-100 justify-between items-center">
+        <div className="flex w-[186px] rounded-lg bg-neutral-100 justify-between items-center">
           <AiOutlineMinus
             role="button"
             className="w-6 h-6 m-4 text-gray-500 cursor-pointer"
@@ -220,8 +255,10 @@ export function ProductDetails() {
           />
         </div>
       </div>
+
+      {/* Add to Cart button */}
       <button
-        className={`w-full text-white py-2 rounded-lg mb-14 ${
+        className={`w-full text-white py-2 rounded-lg ${
           isItemAvailableForPurchase
             ? "bg-blue-500"
             : "bg-gray-400 cursor-not-allowed"
@@ -230,6 +267,25 @@ export function ProductDetails() {
       >
         Add to Cart
       </button>
+
+      {/* Product Details */}
+      <div className="flex flex-col gap-11 mt-11">
+        {productDetails.map((detail) => (
+          <div
+            key={detail.product_id}
+            className="border-b border-b-neutral-200 pb-11 last:border-0"
+          >
+            <h2 className="text-xl font-semibold">{detail.title}</h2>
+            <ul className="list-disc pl-5">
+              {detail.description.map((desc) => (
+                <li key={desc} className="text-gray-600">
+                  {desc}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
