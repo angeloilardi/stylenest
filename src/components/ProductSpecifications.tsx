@@ -69,7 +69,7 @@ const ProductSpecifications = () => {
         {productSpecs.map((spec, index) => (
           <li
             key={spec.feature}
-            className={`flex-1 p-4 ${
+            className={`flex-0 p-4 ${
               currentTabIndex === index ? "border-b border-b-blue-500" : ""
             }`}
             onClick={() => setCurrentTabIndex(index)}
@@ -78,31 +78,33 @@ const ProductSpecifications = () => {
           </li>
         ))}
       </ul>
-      <div className="mt-4 rounded-lg">
+      <div className="mt-4 rounded-lg grid grid-cols-1 lg:grid-cols-[33%_67%] gap-10 items-center">
         <img
-          className="my-10 w-full"
+          className="my-10"
           alt=""
           srcSet={`${imgUrl("mobile")} 480w, ${imgUrl("tablet")} 768w, ${imgUrl(
             "desktop"
           )} 1200w`}
           sizes="(max-width: 480px) 480px, (max-width: 768px) 768px, 1200px"
         />
-        <h2 className="text-2xl">{tabContent.descriptionHeading}</h2>
-        <p className="mt-2">{tabContent.description}</p>
+        <div className="flex flex-col">
+          <h2 className="text-2xl">{tabContent.descriptionHeading}</h2>
+          <p className="mt-2">{tabContent.description}</p>
+          <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-10">
+            {tabContent.points.map((point) => (
+              <li key={point.label} className="flex items-center gap-2">
+                <div className="w-12 h-12 flex items-center justify-center shadow rounded-full">
+                  {icon(
+                    point.icon as keyof typeof Icons,
+                    "text-indigo-700 w-8 h-8"
+                  )}
+                </div>
+                {point.label}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
-      <ul className="flex flex-col gap-4 mt-10">
-        {tabContent.points.map((point) => (
-          <li key={point.label} className="flex items-center gap-2">
-            <div className="w-12 h-12 flex items-center justify-center shadow rounded-full">
-              {icon(
-                point.icon as keyof typeof Icons,
-                "text-indigo-700 w-8 h-8"
-              )}
-            </div>
-            {point.label}
-          </li>
-        ))}
-      </ul>
     </section>
   );
 };
