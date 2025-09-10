@@ -10,6 +10,7 @@ import RatingStars from "./ui/RatingStars";
 import ColorSwatch from "./ui/ColorSwatch";
 import SIZE_OPTIONS from "../constants/Constants";
 import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
+import ProductSpecifications from "./ProductSpecifications";
 
 export function ProductDetails() {
   const { productId } = useParams();
@@ -286,6 +287,8 @@ export function ProductDetails() {
           </div>
         ))}
       </div>
+
+      <ProductSpecifications />
     </div>
   );
 }
