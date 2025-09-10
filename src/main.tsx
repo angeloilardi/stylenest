@@ -6,9 +6,12 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ProductDetails } from "./components/ProductDetails.tsx";
 import ProductGrid from "./components/ProductGrid.tsx";
 import App from "./App.tsx";
+import Footer from "./components/Footer.tsx";
+import Navbar from "./components/Navbar.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
+    <Navbar />
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} />
@@ -16,5 +19,6 @@ createRoot(document.getElementById("root")!).render(
         <Route path="/products/" element={<ProductGrid />} />
       </Routes>
     </BrowserRouter>
+    <Footer />
   </StrictMode>
 );
