@@ -11,6 +11,8 @@ import ColorSwatch from "./ui/ColorSwatch";
 import SIZE_OPTIONS from "../constants/Constants";
 import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
 import ProductSpecifications from "./ProductSpecifications";
+import MoreFromCollection from "./MoreFromCollection";
+import { compareDesc } from "date-fns";
 
 export function ProductDetails() {
   const { productId } = useParams();
@@ -96,6 +98,28 @@ export function ProductDetails() {
     );
     return currentItem && currentItem.stock > currentItem.sold;
   }, [productId, currentColor, currentSize]);
+
+  const relatedProducts = useMemo(() => {
+    const collection = products.find((p) => p.product_id === productId)
+      ?.collection as string;
+    if (!collection) return [];
+    return products
+      .filter(
+        (product) =>
+          product.collection === collection && product.product_id !== productId
+      )
+      .map((product) => product.created_at)
+      .sort(compareDesc)
+      .map((date) => {
+        return products.find((p) => p.created_at === date) as {
+          product_id: string;
+          name: string;
+        };
+      })
+      .slice(0, 4);
+  }, [productId]);
+
+  console.log(relatedProducts);
 
   return (
     <div className="flex flex-col p-4 max-w-full">
@@ -289,6 +313,7 @@ export function ProductDetails() {
       </div>
 
       <ProductSpecifications />
+      <MoreFromCollection products={relatedProducts} />
     </div>
   );
 }
