@@ -6,6 +6,7 @@ import ProductCard from "./ProductCard";
 import FilterSidebar from "./FilterSidebar";
 import { CiFilter } from "react-icons/ci";
 import { IoChevronDownOutline } from "react-icons/io5";
+import Button from "./ui/Button";
 
 interface Filters {
   collections: string[];
@@ -115,17 +116,15 @@ const ProductGrid: React.FC = () => {
           onClose={() => setIsModalOpen(false)}
         />
         <div className="flex flex-col">
-          <div className="flex justify-between xl:justify-end text-sm my-6">
-            <button
-              className="border border-neutral-200 px-2 flex items-center gap-2 rounded-md xl:hidden"
+          <div className="flex justify-between xl:justify-end text-sm my-6 w-full">
+            <Button
+              icon={<CiFilter />}
               onClick={() => setIsModalOpen(true)}
+              className="xl:hidden"
             >
-              <CiFilter /> Filter
-            </button>
-
-            <button className="border shadow border-neutral-200 p-4 flex items-center gap-2 rounded-md">
-              Sort by <IoChevronDownOutline />
-            </button>
+              Filter
+            </Button>
+            <Button icon={<IoChevronDownOutline />}>Sort by</Button>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
             {filteredProducts.length > 0 ? (

@@ -8,6 +8,7 @@ import ProductGrid from "./components/ProductGrid.tsx";
 import App from "./App.tsx";
 import Footer from "./components/Footer.tsx";
 import Navbar from "./components/Navbar.tsx";
+import LatestArrivals from "./components/LatestArrivals.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -17,6 +18,7 @@ createRoot(document.getElementById("root")!).render(
         <Route path="/" element={<App />} />
         <Route path="/product/:productId" element={<ProductDetails />} />
         <Route path="/products/" element={<ProductGrid />} />
+        <Route path="/products/latest-arrivals" element={<LatestArrivals />} />
       </Routes>
     </BrowserRouter>
     <Footer />

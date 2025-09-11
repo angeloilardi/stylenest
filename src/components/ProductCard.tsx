@@ -52,24 +52,19 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const imageUrl = productImage ? productImage.image_url : "";
 
   return (
-    <div
-      key={product.product_id}
-      className="max-h-[740px] min-w-[250px] focus:ring-2 w-full"
-    >
+    <div key={product.product_id} className=" focus:ring-2 w-full min-w[250px]">
       <a
         href={`/product/${product.product_id}`}
         className="flex flex-col gap-1 text-decoration-none"
       >
-        <div className="w-full h-64 aspect-[87/11]">
-          <img
-            width={450}
-            height={300}
-            src={imageUrl}
-            alt={product.name}
-            className="object-cover rounded-lg w-full h-full"
-            loading="lazy"
-          />
-        </div>
+        <img
+          // width={450}
+          // height={300}
+          src={imageUrl}
+          alt={product.name}
+          className="object-cover rounded-lg aspect-square"
+          loading="lazy"
+        />
         <small className="capitalize">{currentColor}</small>
         <h3 className="font-semibold">{product.name}</h3>
       </a>

@@ -53,7 +53,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
 
   const sidebarClasses = `
     w-full
-    xl:relative xl:block xl:min-w-[300px] xl:w-1/4
+    xl:relative xl:block xl:min-w[300px]
     ${
       isModalOpen
         ? "fixed inset-0 z-50 transform translate-x-0 transition-transform duration-300"
@@ -96,7 +96,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
         ></div>
 
         <div
-          className={`relative xl:h-auto h-full max-w-[350px] overflow-y-scroll bg-white p-4`}
+          className={`relative xl:h-auto h-full w-[300px] overflow-y-scroll bg-white p-4`}
         >
           {isModalOpen && (
             <div className="flex items-center justify-between pb-4 border-b border-b-neutral-200">

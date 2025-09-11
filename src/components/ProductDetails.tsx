@@ -122,7 +122,7 @@ export function ProductDetails() {
   console.log(relatedProducts);
 
   return (
-    <div className="flex flex-col max-w-7xl mx-auto">
+    <div className="flex flex-col mx-auto">
       <div className="grid lg:grid-cols-2 gap-12 items-start">
         {/* Image gallery */}
         <div className="flex flex-col gap-11 py-18 lg:py-0">

@@ -11,11 +11,15 @@ const Navbar = () => {
   return (
     <header>
       <nav>
-        <div className="py-10 flex items-center mx-auto">
-          <img src="public/logo.svg" alt="" className="mr-4" />
+        <div className="py-6 flex items-center mx-auto">
+          <a href="/">
+            <img src="/logo.svg" alt="" className="mr-4" />
+          </a>
           <ul className="hidden md:flex gap-3">
             <li>Shop all</li>
-            <li>Latest arrivals</li>
+            <a href="/products/latest-arrivals">
+              <li>Latest arrivals</li>
+            </a>
           </ul>
           <div className="flex items-center gap-5 ml-auto">
             <button>
