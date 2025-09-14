@@ -13,6 +13,7 @@ import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
 import ProductSpecifications from "./ProductSpecifications";
 import MoreFromCollection from "./MoreFromCollection";
 import { compareDesc } from "date-fns";
+import { useCart } from "./../context/Cart/usecart";
 
 export function ProductDetails() {
   const { productId } = useParams();
@@ -119,7 +120,25 @@ export function ProductDetails() {
       .slice(0, 4);
   }, [productId]);
 
-  console.log(relatedProducts);
+  const { addToCart, cart } = useCart();
+
+  const handleAddToCart = () => {
+    console.log(productId, currentColor, currentSize, quantity);
+    if (!productId || !currentColor) return;
+
+    if (sizeOptions.length > 0 && !currentSize) {
+      alert("Please select a size before adding to cart.");
+      return;
+    }
+
+    addToCart({
+      productId,
+      color: currentColor,
+      size: currentSize,
+      quantity,
+    });
+    console.log(cart);
+  };
 
   return (
     <div className="flex flex-col mx-auto">
@@ -199,6 +218,7 @@ export function ProductDetails() {
                     key={color}
                     color={color}
                     currentColor={currentColor}
+                    hasTick={isColorAvailable}
                     setCurrentColor={(newColor) => {
                       if (isColorAvailable) {
                         setCurrentColor(newColor);
@@ -288,6 +308,9 @@ export function ProductDetails() {
                 : "bg-gray-400 cursor-not-allowed"
             }`}
             disabled={!isItemAvailableForPurchase}
+            onClick={handleAddToCart}
+            type="button"
+            role="button"
           >
             Add to Cart
           </button>
@@ -310,6 +333,7 @@ export function ProductDetails() {
             ))}
           </div>
         </div>
+        <p>xxx:{cart.map((item) => item.productId)}</p>
       </div>
 
       <ProductSpecifications />

@@ -5,6 +5,7 @@ interface ColorSwatchProps {
   currentColor?: string | null;
   setCurrentColor?: (color: string) => void;
   className?: string;
+  hasTick?: boolean;
 }
 
 const ColorSwatch: React.FC<ColorSwatchProps> = ({
@@ -12,6 +13,7 @@ const ColorSwatch: React.FC<ColorSwatchProps> = ({
   currentColor,
   setCurrentColor,
   className,
+  hasTick = false,
 }) => {
   return (
     <div
@@ -25,7 +27,9 @@ const ColorSwatch: React.FC<ColorSwatchProps> = ({
       } ${className}`}
       onClick={() => setCurrentColor && setCurrentColor(color)}
     >
-      {color === currentColor && <FaCheck className="w-8 h-8 text-white" />}
+      {hasTick && color === currentColor && (
+        <FaCheck className="w-8 h-8 text-white" />
+      )}
     </div>
   );
 };

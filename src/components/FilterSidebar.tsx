@@ -53,11 +53,11 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
 
   const sidebarClasses = `
     w-full
-    xl:relative xl:block xl:min-w[300px]
+    xl:relative xl:block
     ${
       isModalOpen
         ? "fixed inset-0 z-50 transform translate-x-0 transition-transform duration-300"
-        : "fixed inset-0 z-50 transform -translate-x-full transition-transform duration-300 xl:translate-x-0"
+        : "fixed inset-0 z-50 transform -translate-x-full transition-transform duration-300 xl:translate-x-0 xl:w-[300px]"
     }
   `;
 

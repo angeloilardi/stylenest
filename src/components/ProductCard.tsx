@@ -22,7 +22,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       )
     );
   }, [product.product_id]);
-  const [currentColor, setCurrentColor] = useState<string | null>(null);
+  const [currentColor, setCurrentColor] = useState<string | null>(colors[0]);
 
   const hasMultipleColors = colors.length > 1;
 

@@ -40,7 +40,9 @@ const Footer = () => {
           </div>
           <div className="lg:flex lg:flex-row lg:gap-52 md:mt-12">
             <div>
-              <img src="public/logo.svg" />
+              <a href="/">
+                <img src="/logo.svg" alt="" className="mr-4" />
+              </a>
               <p className="my-8">
                 Craft stunning style journeys that weave more joy into every
                 thread.

@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { RiShoppingBag3Line, RiMenuFill, RiCloseFill } from "react-icons/ri";
+import { RiMenuFill, RiCloseFill } from "react-icons/ri";
+import CartModal from "./CartModal";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -11,20 +12,21 @@ const Navbar = () => {
   return (
     <header>
       <nav>
-        <div className="py-6 flex items-center mx-auto">
+        <div className="pb-6 flex items-center mx-auto">
           <a href="/">
             <img src="/logo.svg" alt="" className="mr-4" />
           </a>
           <ul className="hidden md:flex gap-3">
-            <li>Shop all</li>
-            <a href="/products/latest-arrivals">
-              <li>Latest arrivals</li>
-            </a>
+            <li>
+              <a href="/products">Shop all</a>
+            </li>
+
+            <li>
+              <a href="/products/latest-arrivals">Latest arrivals</a>
+            </li>
           </ul>
           <div className="flex items-center gap-5 ml-auto">
-            <button>
-              <RiShoppingBag3Line size={24} />
-            </button>
+            <CartModal />
             <button className="md:hidden">
               {isMenuOpen ? (
                 <RiCloseFill size={24} onClick={toggleMenu} />
