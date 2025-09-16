@@ -15,18 +15,21 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <CartProvider>
       <Navbar />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<App />} />
-          <Route path="/product/:productId" element={<ProductDetails />} />
-          <Route path="/products/" element={<ProductGrid />} />
-          <Route
-            path="/products/latest-arrivals"
-            element={<LatestArrivals />}
-          />
-        </Routes>
-      </BrowserRouter>
-      <Footer />
+      <div className="mx-auto bg-white p-4 rounded-lg">
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<App />} />
+            <Route path="/product/:productId" element={<ProductDetails />} />
+            <Route path="/products/" element={<ProductGrid />} />
+            <Route
+              path="/products/latest-arrivals"
+              element={<LatestArrivals />}
+            />
+          </Routes>
+        </BrowserRouter>
+
+        <Footer />
+      </div>
     </CartProvider>
   </StrictMode>
 );

@@ -13,7 +13,7 @@ import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
 import ProductSpecifications from "./ProductSpecifications";
 import MoreFromCollection from "./MoreFromCollection";
 import { compareDesc } from "date-fns";
-import { useCart } from "./../context/Cart/usecart";
+import { useCart } from "./../context/Cart/useCart";
 
 export function ProductDetails() {
   const { productId } = useParams();
@@ -47,6 +47,10 @@ export function ProductDetails() {
   const [currentPictureIndex, setCurrentPictureIndex] = useState(0);
 
   const [quantity, setQuantity] = useState(1);
+
+  const productName = useMemo(() => {
+    return products.find((item) => item.product_id === productId)?.name;
+  }, [productId]);
 
   const productDetails = useMemo(() => {
     return productInfo.filter((item) => item.product_id === productId);
@@ -123,8 +127,7 @@ export function ProductDetails() {
   const { addToCart, cart } = useCart();
 
   const handleAddToCart = () => {
-    console.log(productId, currentColor, currentSize, quantity);
-    if (!productId || !currentColor) return;
+    if (!productId || !currentColor || !productName) return;
 
     if (sizeOptions.length > 0 && !currentSize) {
       alert("Please select a size before adding to cart.");
@@ -132,6 +135,7 @@ export function ProductDetails() {
     }
 
     addToCart({
+      productName,
       productId,
       color: currentColor,
       size: currentSize,
@@ -170,9 +174,7 @@ export function ProductDetails() {
         </div>
         <div>
           {/* Product name */}
-          <h1 className="text-2xl font-semibold">
-            {products.find((item) => item.product_id === productId)?.name}
-          </h1>
+          <h1 className="text-2xl font-semibold">{productName}</h1>
           {/* Price */}
           <div className="flex py-3 gap-2 items-center text-gray-500">
             {isDiscounted ? (
@@ -333,7 +335,6 @@ export function ProductDetails() {
             ))}
           </div>
         </div>
-        <p>xxx:{cart.map((item) => item.productId)}</p>
       </div>
 
       <ProductSpecifications />

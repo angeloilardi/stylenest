@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { useCart } from "./../context/Cart/usecart";
+import { useCart } from "./../context/Cart/useCart";
 import { AiOutlineClose } from "react-icons/ai";
 import { RiShoppingBag3Line } from "react-icons/ri";
+import SIZE_OPTIONS from "../constants/Constants";
 
 export default function CartModal() {
   const { cart, removeFromCart, clearCart } = useCart();
@@ -12,9 +13,10 @@ export default function CartModal() {
   const handleRemove = (
     itemId: string,
     color: string,
-    size: string | number | null
+    size: string | number | null,
+    productName: string
   ) => {
-    removeFromCart({ productId: itemId, color, size });
+    removeFromCart({ productId: itemId, color, size, productName });
   };
 
   const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
@@ -29,10 +31,10 @@ export default function CartModal() {
       {/* Modal */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+          className="fixed inset-0 bg-gray-700/80 flex justify-end items-center z-50 transition-transform duration-300"
           onClick={() => setIsOpen(false)}
         >
-          <div className="bg-white w-96 rounded-lg p-6 relative">
+          <div className="bg-white w-96 p-6 relative h-full">
             <button
               className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
               onClick={toggleModal}
@@ -52,9 +54,11 @@ export default function CartModal() {
                     className="flex justify-between items-center border-b border-gray-200 pb-2"
                   >
                     <div>
-                      <p className="font-medium">{item.productId}</p>
+                      <p className="font-medium">{item.productName}</p>
                       <p className="text-sm text-gray-500">
-                        {item.color} | {item.size}
+                        {item.color} |{" "}
+                        {SIZE_OPTIONS.find((s) => s.id === item.size)?.name ||
+                          item.size}
                       </p>
                       <p className="text-sm text-gray-500">
                         Qty: {item.quantity}
@@ -63,7 +67,12 @@ export default function CartModal() {
                     <button
                       className="text-red-500 hover:text-red-700"
                       onClick={() =>
-                        handleRemove(item.productId, item.color, item.size)
+                        handleRemove(
+                          item.productId,
+                          item.color,
+                          item.size,
+                          item.productName
+                        )
                       }
                     >
                       Remove
