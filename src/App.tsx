@@ -11,7 +11,7 @@ function App() {
 
         <Outlet />
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 items-center justify-center gap-4 h-[80vh]">
+      <div className="grid grid-cols-1 lg:grid-cols-2 items-center justify-center gap-4 h-[80vh] mt-4">
         <img
           src="public/assets/images/Enzj4-4W4AMQ1ml.jpeg"
           alt=""

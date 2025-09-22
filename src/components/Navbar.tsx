@@ -10,9 +10,9 @@ const Navbar = () => {
   };
 
   return (
-    <header>
+    <header className="fixed top-0 right-0 w-full bg-neutral-200 p-4">
       <nav>
-        <div className="pb-6 flex items-center mx-auto">
+        <div className="flex items-center">
           <a href="/">
             <img src="/logo.svg" alt="" className="mr-4" />
           </a>

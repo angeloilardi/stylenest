@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useCart } from "./../context/Cart/useCart";
 import { AiOutlineClose } from "react-icons/ai";
 import { RiShoppingBag3Line } from "react-icons/ri";
@@ -7,6 +7,7 @@ import SIZE_OPTIONS from "../constants/Constants";
 export default function CartModal() {
   const { cart, removeFromCart, clearCart } = useCart();
   const [isOpen, setIsOpen] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   const toggleModal = () => setIsOpen(!isOpen);
 
@@ -20,11 +21,26 @@ export default function CartModal() {
   };
 
   const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
+  const prevTotalItems = useRef(totalItems);
+
+  useEffect(() => {
+    if (totalItems > prevTotalItems.current) {
+      setIsAnimating(true);
+      const timer = setTimeout(() => setIsAnimating(false), 500); // Match animation duration
+      return () => clearTimeout(timer); // Cleanup timer on unmount
+    }
+    prevTotalItems.current = totalItems;
+  }, [totalItems]);
 
   return (
     <>
       {/* Cart button */}
-      <button onClick={toggleModal} className="flex gap-2">
+      <button
+        onClick={toggleModal}
+        className={`flex gap-2 cursor-pointer ${
+          isAnimating ? "animate-cart-shake" : ""
+        }`}
+      >
         <RiShoppingBag3Line size={24} /> ({totalItems})
       </button>
 
