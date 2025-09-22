@@ -7,11 +7,12 @@ import {
   RiGithubLine,
   RiYoutubeLine,
 } from "react-icons/ri";
+import Button from "./ui/Button";
 
 const Footer = () => {
   return (
     <>
-      <footer className="mt-40">
+      <footer className="mt-20">
         <div className="border-b border-neutral-200">
           <div className="flex flex-col lg:flex-row md:justify-between lg:items-center">
             <div>
@@ -33,9 +34,9 @@ const Footer = () => {
                 placeholder="Enter your email"
                 className="w-full border border-neutral-200 bg-neutral-200/50 p-2 rounded-md"
               />
-              <button className="w-full bg-blue-500 text-white p-2 md:w-36">
+              <Button className="bg-blue-500 text-white p-2 md:w-36">
                 Subscribe
-              </button>
+              </Button>
             </form>
           </div>
           <div className="lg:flex lg:flex-row lg:gap-52 md:mt-12">

@@ -15,7 +15,7 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <CartProvider>
       <Navbar />
-      <div className="mx-auto bg-white p-4 rounded-lg">
+      <div className="mx-auto bg-white p-4 rounded-lg w-full">
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<App />} />
