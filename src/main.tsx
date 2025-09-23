@@ -8,8 +8,8 @@ import ProductGrid from "./components/ProductGrid.tsx";
 import App from "./App.tsx";
 import Footer from "./components/Footer.tsx";
 import Navbar from "./components/Navbar.tsx";
-import LatestArrivals from "./components/LatestArrivals.tsx";
 import { CartProvider } from "./context/Cart/CartProvider.tsx";
+import ProductShowcase from "./components/ProductShowcase.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -22,8 +22,14 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/product/:productId" element={<ProductDetails />} />
             <Route path="/products/" element={<ProductGrid />} />
             <Route
-              path="/products/latest-arrivals"
-              element={<LatestArrivals />}
+              path="/category/:categoryId"
+              element={
+                <ProductShowcase
+                  collectionId="latest-arrivals"
+                  title="Latest arrivals"
+                  viewAllLink="/products/"
+                />
+              }
             />
           </Routes>
         </BrowserRouter>

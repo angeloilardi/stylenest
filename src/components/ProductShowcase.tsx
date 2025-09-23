@@ -1,0 +1,70 @@
+import products from "../data/products.json";
+import ProductCard from "./ProductCard";
+import { useMemo } from "react";
+import { compareDesc, parseISO } from "date-fns";
+import Button from "./ui/Button";
+
+interface ProductShowcaseProps {
+  title: string;
+  collectionId?: string;
+  categoryId?: string;
+  limit?: number;
+  viewAllLink?: string;
+}
+
+const ProductShowcase = ({
+  title,
+  collectionId,
+  categoryId,
+  limit = 8,
+  viewAllLink,
+}: ProductShowcaseProps) => {
+  const productsToShow = useMemo(() => {
+    let filteredProducts = [...products];
+
+    if (collectionId) {
+      filteredProducts = filteredProducts.filter(
+        (p) => p.collection === collectionId
+      );
+    }
+
+    if (categoryId) {
+      filteredProducts = filteredProducts.filter(
+        (p) => p.category === categoryId
+      );
+    }
+
+    // Default sort by latest
+    filteredProducts.sort((a, b) =>
+      compareDesc(parseISO(a.created_at), parseISO(b.created_at))
+    );
+
+    return filteredProducts.slice(0, limit);
+  }, [collectionId, categoryId, limit]);
+
+  return (
+    <div>
+      <div className="flex justify-between mb-10">
+        <h2 className="text-2xl font-semibold">{title}</h2>
+        {viewAllLink && (
+          <a href={viewAllLink}>
+            <Button>View all</Button>
+          </a>
+        )}
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+        {productsToShow.length > 0 ? (
+          productsToShow.map((product) => (
+            <ProductCard key={product.product_id} product={product} />
+          ))
+        ) : (
+          <p className="col-span-full text-center text-gray-500">
+            No products match the selected filters.
+          </p>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default ProductShowcase;

@@ -14,9 +14,16 @@ import ProductSpecifications from "./ProductSpecifications";
 import MoreFromCollection from "./MoreFromCollection";
 import { compareDesc } from "date-fns";
 import { useCart } from "./../context/Cart/useCart";
+import ReviewsModal from "./ReviewsModal";
 
 export function ProductDetails() {
   const { productId } = useParams();
+
+  const product = useMemo(
+    () => products.find((p) => p.product_id === productId),
+    [productId]
+  );
+
   const colorOptions = useMemo(() => {
     return [
       ...new Set(
@@ -47,10 +54,6 @@ export function ProductDetails() {
   const [currentPictureIndex, setCurrentPictureIndex] = useState(0);
 
   const [quantity, setQuantity] = useState(1);
-
-  const productName = useMemo(() => {
-    return products.find((item) => item.product_id === productId)?.name;
-  }, [productId]);
 
   const productDetails = useMemo(() => {
     return productInfo.filter((item) => item.product_id === productId);
@@ -87,6 +90,8 @@ export function ProductDetails() {
     );
   }, [productId, totalReviews]);
 
+  const [isReviewsModalOpen, setIsReviewsModalOpen] = useState(false);
+
   const sizeOptions = useMemo(() => {
     return inventory
       .filter((item) => item.product_id === productId)
@@ -105,8 +110,7 @@ export function ProductDetails() {
   }, [productId, currentColor, currentSize]);
 
   const relatedProducts = useMemo(() => {
-    const collection = products.find((p) => p.product_id === productId)
-      ?.collection as string;
+    const collection = product?.collection as string;
     if (!collection) return [];
     return products
       .filter(
@@ -122,12 +126,12 @@ export function ProductDetails() {
         };
       })
       .slice(0, 4);
-  }, [productId]);
+  }, [productId, product]);
 
-  const { addToCart, cart } = useCart();
+  const { addToCart } = useCart();
 
   const handleAddToCart = () => {
-    if (!productId || !currentColor || !productName) return;
+    if (!productId || !currentColor || !product?.name) return;
 
     if (sizeOptions.length > 0 && !currentSize) {
       alert("Please select a size before adding to cart.");
@@ -135,20 +139,29 @@ export function ProductDetails() {
     }
 
     addToCart({
-      productName,
+      productName: product.name,
       productId,
       color: currentColor,
       size: currentSize,
       quantity,
     });
-    console.log(cart);
   };
 
+  if (!product) {
+    return (
+      <div className="flex flex-col items-center justify-center text-center h-96 gap-4">
+        <h1 className="text-3xl font-bold">Product Not Found</h1>
+        <p className="text-gray-500">
+          Sorry, we couldn't find the product you're looking for.
+        </p>
+      </div>
+    );
+  }
   return (
     <div className="flex flex-col mx-auto">
       <div className="grid lg:grid-cols-2 gap-12 items-start">
         {/* Image gallery */}
-        <div className="flex flex-col gap-11 py-18 lg:py-0">
+        <div className="flex flex-col gap-11 pb-18 lg:py-0">
           <div className="w-full">
             <img
               src={imagesFilteredByColor[currentPictureIndex]?.image_url || ""}
@@ -174,7 +187,7 @@ export function ProductDetails() {
         </div>
         <div>
           {/* Product name */}
-          <h1 className="text-2xl font-semibold">{productName}</h1>
+          <h1 className="text-2xl font-semibold">{product.name}</h1>
           {/* Price */}
           <div className="flex py-3 gap-2 items-center text-gray-500">
             {isDiscounted ? (
@@ -193,17 +206,16 @@ export function ProductDetails() {
           <div className="flex items-center gap-4">
             <span className="text-3xl">{productRating.toFixed(1)}</span>
             <RatingStars rating={productRating} ratingRange={5} />
-            <a href="#" className="text-blue-500">
+            <a
+              href="#"
+              className="text-blue-500"
+              onClick={() => setIsReviewsModalOpen(true)}
+            >
               See all {totalReviews} reviews
             </a>
           </div>
           {/* Product description */}
-          <p className="py-12">
-            {
-              products.find((item) => item.product_id === productId)
-                ?.description
-            }
-          </p>
+          <p className="py-12">{product.description}</p>
           {/* Available colors */}
           <div className="flex flex-col">
             <p>Available colors:</p>
@@ -336,7 +348,12 @@ export function ProductDetails() {
           </div>
         </div>
       </div>
-
+      {isReviewsModalOpen && (
+        <ReviewsModal
+          productId={product.product_id}
+          onClose={() => setIsReviewsModalOpen(false)}
+        />
+      )}
       <ProductSpecifications />
       <MoreFromCollection products={relatedProducts} />
     </div>

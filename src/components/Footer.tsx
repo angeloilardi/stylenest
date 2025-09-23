@@ -54,7 +54,13 @@ const Footer = () => {
                 <span className="mb-4 text-neutral-400"> SHOP CATEGORIES</span>
                 <ul className="flex flex-col gap-2">
                   {categories.map((category) => {
-                    return <li>{category.name}</li>;
+                    return (
+                      <li>
+                        <a href={`/category/${category.category_id}`}>
+                          {category.name}
+                        </a>
+                      </li>
+                    );
                   })}
                 </ul>
               </div>
@@ -62,7 +68,13 @@ const Footer = () => {
                 <span className="mb-4 text-neutral-400"> SHOP COLLECTIONS</span>
                 <ul className="flex flex-col gap-2">
                   {collections.map((collection) => {
-                    return <li>{collection.name}</li>;
+                    return (
+                      <li>
+                        <a href={`/collection/${collection.collection_id}`}>
+                          {collection.name}
+                        </a>
+                      </li>
+                    );
                   })}
                 </ul>
               </div>
