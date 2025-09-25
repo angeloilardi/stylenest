@@ -18,11 +18,13 @@ const Navbar = () => {
           </a>
           <ul className="hidden md:flex gap-3">
             <li>
-              <a href="/products">Shop all</a>
+              <a href="/collection/latest-arrivals">Latest arrivals</a>
             </li>
-
             <li>
-              <a href="/products/latest-arrivals">Latest arrivals</a>
+              <a href="/collections">Collections</a>
+            </li>
+            <li>
+              <a href="/products">Shop all</a>
             </li>
           </ul>
           <div className="flex items-center gap-5 ml-auto">
@@ -37,17 +39,15 @@ const Navbar = () => {
           </div>
         </div>
         {isMenuOpen && (
-          <ul className="flex flex-col gap-3 md:hidden pb-5 ml-5 bg-neutral-200 w-full">
+          <ul className="flex flex-col gap-3 md:hidden pb-5 ml-5 mt-5 bg-neutral-200 w-full">
             <li>
-              <a
-                className="after:bg-red-300 after:absolute after:h-1 after:w-0 after:bottom-0 after:left-0 hover:after:w-full after:transition-all after:duration-300"
-                href="/products"
-              >
-                Shop all
-              </a>
+              <a href="/collection/latest-arrivals">Latest arrivals</a>
             </li>
             <li>
-              <a href="/products/latest-arrivals">Latest arrivals</a>
+              <a href="/collections">Collections</a>
+            </li>
+            <li>
+              <a href="/products">Shop all</a>
             </li>
           </ul>
         )}

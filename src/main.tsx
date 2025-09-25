@@ -10,6 +10,7 @@ import Footer from "./components/Footer.tsx";
 import Navbar from "./components/Navbar.tsx";
 import { CartProvider } from "./context/Cart/CartProvider.tsx";
 import ProductShowcase from "./components/ProductShowcase.tsx";
+import CollectionsPage from "./components/CollectionsPage.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -21,16 +22,12 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/" element={<App />} />
             <Route path="/product/:productId" element={<ProductDetails />} />
             <Route path="/products/" element={<ProductGrid />} />
+            <Route path="/category/:category" element={<ProductShowcase />} />
             <Route
-              path="/category/:categoryId"
-              element={
-                <ProductShowcase
-                  collectionId="latest-arrivals"
-                  title="Latest arrivals"
-                  viewAllLink="/products/"
-                />
-              }
+              path="/collection/:collection"
+              element={<ProductShowcase />}
             />
+            <Route path="/collections" element={<CollectionsPage />} />
           </Routes>
         </BrowserRouter>
 
